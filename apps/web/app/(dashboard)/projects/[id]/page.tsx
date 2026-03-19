@@ -99,7 +99,7 @@ export default function ProjectDetailPage() {
 
   const [project, setProject] = useState<Project | null>(null)
   const [runs, setRuns] = useState<PipelineRun[]>([])
-  const [activePhase, setActivePhase] = useState<Phase>("development")
+  const [activePhase, setActivePhase] = useState<Phase | null>(null) // null = not yet decided
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [runningPipeline, setRunningPipeline] = useState(false)
@@ -107,19 +107,31 @@ export default function ProjectDetailPage() {
   const [editData, setEditData] = useState({ title: "", genre: "", logline: "", idea: "" })
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const fetchProject = useCallback(() => {
+  const refreshProject = useCallback(() => {
+    return fetchAPI<Project>(`/api/projects/${id}`)
+      .then(setProject)
+      .catch((err: Error) => setError(err.message))
+  }, [id])
+
+  // Initial load — set active tab based on project data
+  useEffect(() => {
     fetchAPI<Project>(`/api/projects/${id}`)
       .then((p) => {
         setProject(p)
-        if (p.direction_plan_json && activePhase === "development") {
-          setActivePhase("pre-production")
-        }
+        setActivePhase(p.direction_plan_json ? "pre-production" : "development")
       })
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [id, activePhase])
 
-  const fetchRuns = useCallback(() => {
+    fetchAPI<{ runs: PipelineRun[] }>(`/api/pipeline/${id}/runs`)
+      .then((data) => setRuns(data.runs ?? []))
+      .catch(() => {})
+
+    return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
+  // eslint-disable-next-line
+  }, [id])
+
+  const pollRuns = () => {
     fetchAPI<{ runs: PipelineRun[] }>(`/api/pipeline/${id}/runs`)
       .then((data) => {
         setRuns(data.runs ?? [])
@@ -130,17 +142,11 @@ export default function ProjectDetailPage() {
           clearInterval(pollingRef.current)
           pollingRef.current = null
           setRunningPipeline(false)
-          fetchProject()
+          refreshProject()
         }
       })
       .catch(() => {})
-  }, [id, fetchProject])
-
-  useEffect(() => {
-    fetchProject()
-    fetchRuns()
-    return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
-  }, [fetchProject, fetchRuns])
+  }
 
   const runPipeline = async (steps: string[]) => {
     setRunningPipeline(true)
@@ -150,9 +156,9 @@ export default function ProjectDetailPage() {
         method: "POST",
         body: JSON.stringify({ steps, idea: project?.idea }),
       })
-      fetchRuns()
+      pollRuns()
       if (pollingRef.current) clearInterval(pollingRef.current)
-      pollingRef.current = setInterval(fetchRuns, 2000)
+      pollingRef.current = setInterval(pollRuns, 2000)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Pipeline error")
       setRunningPipeline(false)

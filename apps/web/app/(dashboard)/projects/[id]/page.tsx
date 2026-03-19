@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { fetchAPI } from "../../../../lib/api"
+import { AssetGallery } from "../../../../components/asset-gallery"
 
 // ─── Types ───
 
@@ -287,6 +288,7 @@ export default function ProjectDetailPage() {
           onRunCinematographer={() => runPipeline(["cinematographer"])}
           onRunGeneralist={() => runPipeline(["generalist"])}
           runningPipeline={runningPipeline}
+          projectId={id}
         />
       )}
 
@@ -474,6 +476,12 @@ function PreProductionTab({
           {runningPipeline ? "Generating..." : "Generate Storyboards"}
         </button>
       </div>
+
+      {/* Storyboard Gallery */}
+      <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+        <h2 className="mb-4 text-lg font-semibold">Storyboard Gallery</h2>
+        <AssetGallery projectId={projectId} filter="IMAGE" />
+      </div>
     </div>
   )
 }
@@ -481,12 +489,13 @@ function PreProductionTab({
 // ─── Production Tab ───
 
 function ProductionTab({
-  plan, onRunCinematographer, onRunGeneralist, runningPipeline,
+  plan, onRunCinematographer, onRunGeneralist, runningPipeline, projectId,
 }: {
   plan: DirectionPlan | null
   onRunCinematographer: () => void
   onRunGeneralist: () => void
   runningPipeline: boolean
+  projectId: string
 }) {
   if (!plan) {
     return (
@@ -535,7 +544,13 @@ function ProductionTab({
         >
           {runningPipeline ? "Generating..." : "Generate Scene Videos"}
         </button>
-        <p className="mt-2 text-xs text-gray-500">Veo 3.0 SDK 연동 대기 중 — 현재 Mock 모드로 동작</p>
+        <p className="mt-2 text-xs text-gray-500">Veo 3.0 REST API 연동 완료 — 씬당 약 60초 소요</p>
+      </div>
+
+      {/* Video Gallery */}
+      <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+        <h2 className="mb-4 text-lg font-semibold">Generated Videos</h2>
+        <AssetGallery projectId={projectId} filter="VIDEO" />
       </div>
     </div>
   )
@@ -601,6 +616,12 @@ function PostProductionTab({
         >
           {runningPipeline ? "Merging..." : "Merge Videos"}
         </button>
+      </div>
+
+      {/* Audio & Video Assets */}
+      <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+        <h2 className="mb-4 text-lg font-semibold">Generated Assets</h2>
+        <AssetGallery projectId={projectId} />
       </div>
     </div>
   )

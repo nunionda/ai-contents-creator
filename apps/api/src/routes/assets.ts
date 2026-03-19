@@ -2,6 +2,7 @@ import { Hono } from "hono"
 import { prisma } from "@marionette/db"
 import { NotFoundError } from "../middleware/error-handler.ts"
 import { readFile } from "node:fs/promises"
+import { resolve } from "node:path"
 
 export const assetRoutes = new Hono()
 
@@ -18,8 +19,8 @@ assetRoutes.get("/:projectId", async (c) => {
     assets: assets.map((asset) => ({
       id: asset.id,
       project_id: asset.projectId,
-      type: asset.type.toLowerCase(),
-      phase: asset.phase.toLowerCase(),
+      type: asset.type,
+      phase: asset.phase,
       agent_name: asset.agentName,
       scene_number: asset.sceneNumber,
       file_name: asset.fileName,
@@ -31,7 +32,7 @@ assetRoutes.get("/:projectId", async (c) => {
   })
 })
 
-// GET /download/:assetId — download asset file
+// GET /download/:assetId — serve asset file for browser display
 assetRoutes.get("/download/:assetId", async (c) => {
   const assetId = c.req.param("assetId")
 
@@ -43,15 +44,19 @@ assetRoutes.get("/download/:assetId", async (c) => {
     throw new NotFoundError("Asset", assetId)
   }
 
+  // Resolve relative paths against project root
+  const absolutePath = resolve(asset.filePath)
+
   try {
-    const fileBuffer = await readFile(asset.filePath)
+    const fileBuffer = await readFile(absolutePath)
     c.header("Content-Type", asset.mimeType)
-    c.header("Content-Disposition", `attachment; filename="${asset.fileName}"`)
+    c.header("Content-Disposition", `inline; filename="${asset.fileName}"`)
+    c.header("Cache-Control", "public, max-age=3600")
     if (asset.fileSize) {
       c.header("Content-Length", String(asset.fileSize))
     }
     return c.body(fileBuffer)
   } catch {
-    throw new NotFoundError("Asset file", asset.filePath)
+    throw new NotFoundError("Asset file", absolutePath)
   }
 })

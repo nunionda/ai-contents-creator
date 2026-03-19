@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { fetchAPI } from "../lib/api"
+import { fetchAPI, API_BASE } from "../lib/api"
 
 interface Asset {
   id: string
@@ -73,7 +73,7 @@ function AssetCard({ asset }: { asset: Asset }) {
       <div className="relative flex h-40 items-center justify-center bg-gray-950">
         {asset.type === "IMAGE" && (
           <img
-            src={`/api/assets/download/${asset.id}`}
+            src={`${API_BASE}/api/assets/download/${asset.id}`}
             alt={asset.file_name}
             className="h-full w-full object-cover"
             loading="lazy"
@@ -81,7 +81,7 @@ function AssetCard({ asset }: { asset: Asset }) {
         )}
         {asset.type === "VIDEO" && (
           <video
-            src={`/api/assets/download/${asset.id}`}
+            src={`${API_BASE}/api/assets/download/${asset.id}`}
             controls
             className="h-full w-full object-cover"
             preload="metadata"
@@ -102,7 +102,7 @@ function AssetCard({ asset }: { asset: Asset }) {
               ))}
             </div>
             <audio
-              src={`/api/assets/download/${asset.id}`}
+              src={`${API_BASE}/api/assets/download/${asset.id}`}
               controls
               className="w-full"
               preload="metadata"

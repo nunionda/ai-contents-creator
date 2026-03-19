@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { fetchAPI } from "../../../../lib/api"
@@ -389,6 +390,23 @@ function DevelopmentTab({
           </div>
         )}
       </div>
+
+      {/* Screenplay Development Link */}
+      <Link
+        href={`/projects/${project.id}/screenplay`}
+        className="block rounded-xl border border-purple-500/30 bg-purple-500/5 p-6 transition hover:border-purple-500/50 hover:bg-purple-500/10"
+      >
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">📖</span>
+          <div>
+            <h2 className="text-lg font-semibold">시나리오 개발 (Screenplay Development)</h2>
+            <p className="mt-1 text-sm text-gray-400">
+              5단계 워크플로우: 기획 → 인물설계 → 트리트먼트 → 집필 → 피드백
+            </p>
+          </div>
+          <span className="ml-auto text-gray-500">→</span>
+        </div>
+      </Link>
 
       {/* ScriptWriter Action */}
       <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">

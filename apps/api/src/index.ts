@@ -5,6 +5,7 @@ import { projectRoutes } from "./routes/projects.ts"
 import { pipelineRoutes } from "./routes/pipeline.ts"
 import { agentRoutes } from "./routes/agents.ts"
 import { assetRoutes } from "./routes/assets.ts"
+import { screenplayRoutes } from "./routes/screenplay.ts"
 import { errorHandler } from "./middleware/error-handler.ts"
 
 const app = new Hono()
@@ -19,5 +20,6 @@ app.route("/api/projects", projectRoutes)
 app.route("/api/pipeline", pipelineRoutes)
 app.route("/api/agents", agentRoutes)
 app.route("/api/assets", assetRoutes)
+app.route("/api/screenplay", screenplayRoutes)
 
 export default { port: 3001, fetch: app.fetch }

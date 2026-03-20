@@ -26,6 +26,7 @@ model Project {
   assets            Asset[]
   screenplay        Screenplay?
   snapshots         ProjectSnapshot[]
+  batchRuns         BatchRun[]
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 }
@@ -130,4 +131,67 @@ enum AssetType {
   AUDIO
   MODEL_3D
   DOCUMENT
+}
+
+enum TaskStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REGENERATING
+}
+
+model BatchRun {
+  id              String      @id @default(cuid())
+  projectId       String
+  project         Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  status          RunStatus   @default(QUEUED)
+  totalScenes     Int
+  completedScenes Int         @default(0)
+  progress        Float       @default(0)
+  errorMessage    String?
+  sceneTasks      SceneTask[]
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model SceneTask {
+  id           String     @id @default(cuid())
+  batchRunId   String
+  batchRun     BatchRun   @relation(fields: [batchRunId], references: [id], onDelete: Cascade)
+  sceneNumber  Int
+  status       TaskStatus @default(QUEUED)
+  currentStep  String?
+  stepResults  Json       @default("{}")
+  attempt      Int        @default(1)
+  errorMessage String?
+  cutTasks     CutTask[]
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([batchRunId, sceneNumber])
+}
+
+model CutTask {
+  id           String     @id @default(cuid())
+  sceneTaskId  String
+  sceneTask    SceneTask  @relation(fields: [sceneTaskId], references: [id], onDelete: Cascade)
+  cutNumber    Int
+  status       TaskStatus @default(QUEUED)
+  steps        Json
+  currentStep  String?
+  stepResults  Json       @default("{}")
+  attempt      Int        @default(1)
+  errorMessage String?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([sceneTaskId, cutNumber])
 }

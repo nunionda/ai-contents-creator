@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { fetchAPI } from "../../../../lib/api"
+import { fetchAPI, API_BASE } from "../../../../lib/api"
 import { AssetGallery } from "../../../../components/asset-gallery"
 
 // ─── Types ───
@@ -205,6 +205,13 @@ export default function ProjectDetailPage() {
               </span>
             </div>
           </div>
+          <a
+            href={`${API_BASE}/api/export/${project.id}`}
+            className="rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+            download
+          >
+            Export ZIP
+          </a>
         </div>
         {project.logline && <p className="mt-2 text-sm text-gray-400">{project.logline}</p>}
       </div>

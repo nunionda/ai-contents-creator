@@ -6,6 +6,7 @@
 export { BaseAgent } from "./base/agent.js"
 export type { AgentInput, AgentOutput } from "./base/agent.js"
 export { PipelineOrchestrator } from "./base/pipeline.js"
+export { BatchOrchestrator } from "./base/batch-orchestrator.js"
 export { PipelineEventBus } from "./base/pipeline-events.js"
 
 // Pre-Production

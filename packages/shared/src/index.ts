@@ -1,4 +1,5 @@
 export {
+  type Cut,
   type Scene,
   type DirectionPlan,
   ProjectStatus,

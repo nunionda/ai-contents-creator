@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { fetchAPI, API_BASE } from "../../../../lib/api"
 import { AssetGallery } from "../../../../components/asset-gallery"
 import { VersionHistory } from "../../../../components/version-history"
+import { BatchMonitor } from "../../../../components/batch-monitor"
 
 // ─── Types ───
 
@@ -539,6 +540,9 @@ function ProductionTab({
 
   return (
     <div className="space-y-6">
+      {/* Batch Production */}
+      <BatchMonitor projectId={projectId} />
+
       {/* Step 1: Cinematography */}
       <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
         <div className="mb-2 flex items-center gap-2">

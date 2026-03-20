@@ -4,6 +4,8 @@
 
 import type { PrismaClient } from "@prisma/client"
 import type { BaseAgent, AgentInput, AgentOutput } from "./agent.js"
+import type { PipelineEventBus } from "./pipeline-events.js"
+import type { PipelineWSEvent } from "@marionette/shared"
 
 // ─── Step weight presets for progress calculation ───
 
@@ -32,12 +34,16 @@ const DEFAULT_WEIGHT = 10
 export class PipelineOrchestrator {
   private readonly registry = new Map<string, BaseAgent>()
 
-  constructor(private readonly db: PrismaClient) {}
+  constructor(private readonly db: PrismaClient, private readonly eventBus?: PipelineEventBus) {}
 
   /** Register an agent under a step name (e.g. "script_writer"). */
   register(name: string, agent: BaseAgent): this {
     this.registry.set(name, agent)
     return this
+  }
+
+  private emit(event: PipelineWSEvent): void {
+    this.eventBus?.emitEvent(event)
   }
 
   /**
@@ -59,6 +65,9 @@ export class PipelineOrchestrator {
         startedAt: new Date(),
       },
     })
+
+    const project = await this.db.project.findUnique({ where: { id: projectId }, select: { title: true } })
+    this.emit({ type: "run:started", runId, projectId, projectTitle: project?.title ?? "Untitled", steps })
 
     let previousOutput: AgentOutput | undefined
     const stepResults: Record<string, Record<string, unknown>> = {}
@@ -88,10 +97,12 @@ export class PipelineOrchestrator {
           ...(previousOutput?.data ?? {}),
         }
 
+        this.emit({ type: "step:started", runId, step, stepIndex: steps.indexOf(step) })
         const output = await agent.execute(input)
 
         if (!output.success) {
           stepResults[step] = { status: "failed", error: output.message }
+          this.emit({ type: "step:completed", runId, step, success: false, message: output.message })
           await this.markFailed(runId, stepResults, `${step}: ${output.message}`)
           return
         }
@@ -116,10 +127,14 @@ export class PipelineOrchestrator {
           },
         })
 
+        this.emit({ type: "step:completed", runId, step, success: true, message: output.message })
+        this.emit({ type: "progress", runId, progress, currentStep: step })
+
         previousOutput = output
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err)
         stepResults[step] = { status: "failed", error: errorMessage }
+        this.emit({ type: "step:completed", runId, step, success: false, message: errorMessage })
         await this.markFailed(runId, stepResults, `${step} threw: ${errorMessage}`)
         return
       }
@@ -135,6 +150,7 @@ export class PipelineOrchestrator {
         completedAt: new Date(),
       },
     })
+    this.emit({ type: "run:completed", runId, status: "completed" })
   }
 
   // ── Internal helpers ───
@@ -149,5 +165,6 @@ export class PipelineOrchestrator {
         completedAt: new Date(),
       },
     })
+    this.emit({ type: "run:completed", runId, status: "failed", error: errorMessage })
   }
 }

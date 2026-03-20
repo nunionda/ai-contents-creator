@@ -36,6 +36,18 @@ export abstract class BaseAgent {
   /** Execute the agent's primary task. */
   abstract execute(input: AgentInput): Promise<AgentOutput>
 
+  /**
+   * Look up provider/model from AgentConfig for this agent.
+   * Returns empty object if no config found → gateway uses default routing.
+   */
+  protected async getProviderConfig(): Promise<{ provider?: string; model?: string }> {
+    const config = await this.db.agentConfig.findUnique({
+      where: { agentName: this.name },
+      select: { provider: true, model: true },
+    })
+    return config ? { provider: config.provider, model: config.model } : {}
+  }
+
   /** Persist a produced asset to the database. */
   protected async saveAsset(params: {
     projectId: string

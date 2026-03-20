@@ -1,5 +1,5 @@
 export { AIGateway } from "./gateway.js"
-export { GeminiProvider, SunoProvider } from "./providers/index.js"
+export { GeminiProvider, SunoProvider, OpenAIProvider } from "./providers/index.js"
 
 export type {
   TextOptions,

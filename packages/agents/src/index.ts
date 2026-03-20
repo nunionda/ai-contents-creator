@@ -14,6 +14,12 @@ export { ScripterAgent } from "./pre-production/scripter.js"
 export type { ScripterInput } from "./pre-production/scripter.js"
 export { ConceptArtistAgent } from "./pre-production/concept-artist.js"
 export type { ConceptArtistInput } from "./pre-production/concept-artist.js"
+export { CastingDirectorAgent } from "./pre-production/casting-director.js"
+export type { CastingDirectorInput } from "./pre-production/casting-director.js"
+export { LocationScoutAgent } from "./pre-production/location-scout.js"
+export type { LocationScoutInput } from "./pre-production/location-scout.js"
+export { PrevisualizerAgent } from "./pre-production/previsualizer.js"
+export type { PrevisualizerInput } from "./pre-production/previsualizer.js"
 
 // Main-Production
 export { CinematographerAgent } from "./main-production/cinematographer.js"
@@ -39,6 +45,9 @@ import type { BaseAgent } from "./base/agent.js"
 import { ScriptWriterAgent } from "./pre-production/script-writer.js"
 import { ScripterAgent } from "./pre-production/scripter.js"
 import { ConceptArtistAgent } from "./pre-production/concept-artist.js"
+import { CastingDirectorAgent } from "./pre-production/casting-director.js"
+import { LocationScoutAgent } from "./pre-production/location-scout.js"
+import { PrevisualizerAgent } from "./pre-production/previsualizer.js"
 import { CinematographerAgent } from "./main-production/cinematographer.js"
 import { GeneralistAgent } from "./main-production/generalist.js"
 import { SoundDesignerAgent } from "./post-production/sound-designer.js"
@@ -58,6 +67,9 @@ export function createAgentRegistry(gateway: AIGateway, db: PrismaClient): Map<s
   registry.set("script_writer", new ScriptWriterAgent(gateway, db))
   registry.set("scripter", new ScripterAgent(gateway, db))
   registry.set("concept_artist", new ConceptArtistAgent(gateway, db))
+  registry.set("casting_director", new CastingDirectorAgent(gateway, db))
+  registry.set("location_scout", new LocationScoutAgent(gateway, db))
+  registry.set("previsualizer", new PrevisualizerAgent(gateway, db))
 
   // Main-Production
   registry.set("cinematographer", new CinematographerAgent(gateway, db))

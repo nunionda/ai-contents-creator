@@ -8,6 +8,7 @@ import { assetRoutes } from "./routes/assets.ts"
 import { screenplayRoutes } from "./routes/screenplay.ts"
 import { brainstormRoutes } from "./routes/brainstorm.ts"
 import { loglineRoutes } from "./routes/logline.ts"
+import { promptGuideRoutes } from "./routes/prompt-guide.ts"
 import { errorHandler } from "./middleware/error-handler.ts"
 
 const app = new Hono()
@@ -25,5 +26,6 @@ app.route("/api/assets", assetRoutes)
 app.route("/api/screenplay", screenplayRoutes)
 app.route("/api/brainstorm", brainstormRoutes)
 app.route("/api/logline", loglineRoutes)
+app.route("/api/prompt-guide", promptGuideRoutes)
 
 export default { port: 3001, fetch: app.fetch, idleTimeout: 255 }

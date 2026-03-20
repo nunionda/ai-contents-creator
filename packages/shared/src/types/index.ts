@@ -23,3 +23,4 @@ export {
 } from "./agent.js";
 
 export { AssetType, type Asset } from "./asset.js";
+export { type PipelineWSEvent, type PipelineRunSnapshot } from "./ws-events.js"

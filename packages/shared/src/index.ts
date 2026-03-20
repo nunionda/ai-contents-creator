@@ -19,3 +19,4 @@ export {
 } from "./types/index.js";
 
 export { createLogger, type Logger, type LogLevel } from "./utils/logger.js";
+export { type PipelineWSEvent, type PipelineRunSnapshot } from "./types/ws-events.js"

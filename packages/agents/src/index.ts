@@ -24,6 +24,12 @@ export { GeneralistAgent } from "./main-production/generalist.js"
 export { SoundDesignerAgent } from "./post-production/sound-designer.js"
 export type { SoundDesignerInput } from "./post-production/sound-designer.js"
 export { MasterEditorAgent } from "./post-production/master-editor.js"
+export { ComposerAgent } from "./post-production/composer.js"
+export type { ComposerInput } from "./post-production/composer.js"
+export { ColoristAgent } from "./post-production/colorist.js"
+export type { ColoristInput } from "./post-production/colorist.js"
+export { MixingEngineerAgent } from "./post-production/mixing-engineer.js"
+export type { MixingEngineerInput } from "./post-production/mixing-engineer.js"
 
 // ─── Agent Registry ───
 
@@ -37,6 +43,9 @@ import { CinematographerAgent } from "./main-production/cinematographer.js"
 import { GeneralistAgent } from "./main-production/generalist.js"
 import { SoundDesignerAgent } from "./post-production/sound-designer.js"
 import { MasterEditorAgent } from "./post-production/master-editor.js"
+import { ComposerAgent } from "./post-production/composer.js"
+import { ColoristAgent } from "./post-production/colorist.js"
+import { MixingEngineerAgent } from "./post-production/mixing-engineer.js"
 
 /**
  * Create all available agents with shared dependencies.
@@ -56,7 +65,10 @@ export function createAgentRegistry(gateway: AIGateway, db: PrismaClient): Map<s
 
   // Post-Production
   registry.set("sound_designer", new SoundDesignerAgent(gateway, db))
+  registry.set("composer", new ComposerAgent(gateway, db))
   registry.set("master_editor", new MasterEditorAgent(gateway, db))
+  registry.set("colorist", new ColoristAgent(gateway, db))
+  registry.set("mixing_engineer", new MixingEngineerAgent(gateway, db))
 
   return registry
 }

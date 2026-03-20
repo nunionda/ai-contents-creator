@@ -11,11 +11,15 @@ const STEP_WEIGHTS: Record<string, number> = {
   script_writer: 20,
   scripter: 20,
   concept_artist: 15,
+  cinematographer: 10,
   generalist: 25,
   asset_designer: 10,
   vfx_compositor: 10,
   master_editor: 10,
+  colorist: 10,
   sound_designer: 10,
+  composer: 15,
+  mixing_engineer: 10,
 }
 
 const DEFAULT_WEIGHT = 10

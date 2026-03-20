@@ -17,15 +17,15 @@ const agents: AgentSeed[] = [
   { agentName: "previsualizer",    phase: "PRE",  provider: "gemini", model: "veo-3.0",                enabled: false },
   { agentName: "casting-director", phase: "PRE",  provider: "gemini", model: "gemini-2.5-flash-image", enabled: false },
   { agentName: "location-scout",   phase: "PRE",  provider: "gemini", model: "gemini-2.5-flash-image", enabled: false },
-  { agentName: "cinematographer",  phase: "MAIN", provider: "gemini", model: "gemini-2.5-flash",       enabled: false },
+  { agentName: "cinematographer",  phase: "MAIN", provider: "gemini", model: "gemini-2.5-flash",       enabled: true  },
   { agentName: "generalist",       phase: "MAIN", provider: "gemini", model: "veo-3.0",                enabled: true  },
   { agentName: "asset-designer",   phase: "MAIN", provider: "meshy",  model: "meshy-v1",               enabled: false },
   { agentName: "vfx-compositor",   phase: "POST", provider: "local",  model: "ffmpeg",                 enabled: false },
   { agentName: "master-editor",    phase: "POST", provider: "local",  model: "ffmpeg",                 enabled: true  },
-  { agentName: "colorist",         phase: "POST", provider: "local",  model: "ffmpeg",                 enabled: false },
+  { agentName: "colorist",         phase: "POST", provider: "local",  model: "ffmpeg",                 enabled: true  },
   { agentName: "sound-designer",   phase: "POST", provider: "gemini", model: "gemini-tts",             enabled: true  },
-  { agentName: "composer",         phase: "POST", provider: "suno",   model: "suno-v4",                enabled: false },
-  { agentName: "mixing-engineer",  phase: "POST", provider: "local",  model: "ffmpeg",                 enabled: false },
+  { agentName: "composer",         phase: "POST", provider: "suno",   model: "suno-v4",                enabled: true  },
+  { agentName: "mixing-engineer",  phase: "POST", provider: "local",  model: "ffmpeg",                 enabled: true  },
 ];
 
 async function main() {

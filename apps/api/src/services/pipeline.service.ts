@@ -1,6 +1,7 @@
 import { prisma } from "@marionette/db"
 import { AIGateway } from "@marionette/ai-gateway"
 import { GeminiProvider } from "@marionette/ai-gateway/providers/gemini.js"
+import { SunoProvider } from "@marionette/ai-gateway/providers/suno.js"
 import { createAgentRegistry, PipelineOrchestrator } from "@marionette/agents"
 import type { PipelineRunResponse, StepResult, RunStatus } from "@marionette/shared/types/pipeline.ts"
 import { NotFoundError } from "../middleware/error-handler.ts"
@@ -14,6 +15,7 @@ function getGateway(): AIGateway {
   if (!gateway) {
     gateway = new AIGateway()
     gateway.register("gemini", new GeminiProvider(), true)
+    gateway.register("suno", new SunoProvider())
   }
   return gateway
 }
@@ -71,6 +73,7 @@ export async function createRun(projectId: string, steps: string[], idea?: strin
   // Determine phase from first step
   const preSteps = ["script_writer", "scripter", "concept_artist", "previsualizer", "casting_director", "location_scout"]
   const mainSteps = ["cinematographer", "generalist", "asset_designer"]
+  // Post steps: sound_designer, composer, master_editor, colorist, mixing_engineer
   const firstStep = steps[0] ?? ""
   const phase = preSteps.includes(firstStep) ? "PRE" : mainSteps.includes(firstStep) ? "MAIN" : "POST"
 

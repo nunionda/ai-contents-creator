@@ -43,6 +43,27 @@ async function sendSnapshot(ws: ServerWebSocket<unknown>): Promise<void> {
   }))
 
   ws.send(JSON.stringify({ type: "run:snapshot", runs } satisfies PipelineWSEvent))
+
+  const activeBatchRuns = await db!.batchRun.findMany({
+    where: { status: { in: ["RUNNING", "QUEUED"] } },
+    include: { project: { select: { title: true } } },
+  })
+
+  if (activeBatchRuns.length > 0) {
+    const batchSnapshot: PipelineWSEvent = {
+      type: "batch:snapshot",
+      batchRuns: activeBatchRuns.map((br) => ({
+        batchRunId: br.id,
+        projectId: br.projectId,
+        projectTitle: br.project.title,
+        status: br.status,
+        progress: br.progress,
+        totalScenes: br.totalScenes,
+        completedScenes: br.completedScenes,
+      })),
+    }
+    ws.send(JSON.stringify(batchSnapshot))
+  }
 }
 
 /** Bun WebSocket handler object — pass to `export default { websocket }`. */

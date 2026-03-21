@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.0",
-    "@marionette/shared": "workspace:*"
+    "@marionette/shared": "workspace:*",
+    "edge-tts": "^1.0.1"
   }
 }

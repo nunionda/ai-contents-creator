@@ -2,6 +2,8 @@ import { Hono } from "hono"
 import { prisma } from "@marionette/db"
 import { AIGateway } from "@marionette/ai-gateway"
 import { GeminiProvider } from "@marionette/ai-gateway/providers/gemini.js"
+import { ReplicateProvider } from "@marionette/ai-gateway/providers/replicate.js"
+import { EdgeTTSProvider } from "@marionette/ai-gateway/providers/edge-tts.js"
 import { NotFoundError, ValidationError, AppError } from "../middleware/error-handler.ts"
 import { createSnapshot } from "./snapshots.ts"
 import { mkdir, writeFile, stat } from "node:fs/promises"
@@ -24,6 +26,11 @@ function getGateway(): AIGateway {
   if (!gateway) {
     gateway = new AIGateway()
     gateway.register("gemini", new GeminiProvider(), true)
+    // Free fallback providers
+    if (process.env["REPLICATE_API_TOKEN"]) {
+      gateway.register("replicate", new ReplicateProvider())
+    }
+    gateway.register("edge", new EdgeTTSProvider())
   }
   return gateway
 }

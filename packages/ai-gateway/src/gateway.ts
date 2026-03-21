@@ -111,6 +111,30 @@ export class AIGateway {
     return p.generateTTS(text, options)
   }
 
+  // ── Fallback helper ─────────────────────────────────────────────
+
+  /**
+   * Execute a primary call and fall back to an alternative provider on failure.
+   *
+   * @example
+   * const result = await gateway.withFallback(
+   *   () => gateway.video(prompt, { provider: "gemini" }),
+   *   () => gateway.video(prompt, { provider: "replicate" }),
+   * )
+   */
+  async withFallback<T>(
+    primary: () => Promise<T>,
+    fallback: () => Promise<T>,
+  ): Promise<T> {
+    try {
+      return await primary()
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.warn(`[AIGateway] Primary failed, falling back: ${msg}`)
+      return fallback()
+    }
+  }
+
   // ── Internal helpers ─────────────────────────────────────────────
 
   private resolve<T>(

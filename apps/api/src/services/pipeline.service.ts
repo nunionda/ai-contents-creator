@@ -3,6 +3,9 @@ import { AIGateway } from "@marionette/ai-gateway"
 import { GeminiProvider } from "@marionette/ai-gateway/providers/gemini.js"
 import { SunoProvider } from "@marionette/ai-gateway/providers/suno.js"
 import { OpenAIProvider } from "@marionette/ai-gateway/providers/openai.js"
+import { ReplicateProvider } from "@marionette/ai-gateway/providers/replicate.js"
+import { MusicGenProvider } from "@marionette/ai-gateway/providers/musicgen.js"
+import { EdgeTTSProvider } from "@marionette/ai-gateway/providers/edge-tts.js"
 import { createAgentRegistry, PipelineOrchestrator, PipelineEventBus } from "@marionette/agents"
 import type { PipelineRunResponse, StepResult, RunStatus } from "@marionette/shared/types/pipeline.ts"
 import { NotFoundError } from "../middleware/error-handler.ts"
@@ -24,6 +27,14 @@ function getGateway(): AIGateway {
       gateway.register("openai", new OpenAIProvider())
       console.log("[Gateway] OpenAI provider registered")
     }
+    // Free fallback providers — always registered
+    if (process.env["REPLICATE_API_TOKEN"]) {
+      gateway.register("replicate", new ReplicateProvider())
+      console.log("[Gateway] Replicate provider registered (free fallback)")
+    }
+    gateway.register("musicgen", new MusicGenProvider())
+    gateway.register("edge", new EdgeTTSProvider())
+    console.log("[Gateway] MusicGen + EdgeTTS providers registered (free fallback)")
   }
   return gateway
 }

@@ -1,3 +1,6 @@
 export { GeminiProvider } from "./gemini.js"
 export { SunoProvider } from "./suno.js"
 export { OpenAIProvider } from "./openai.js"
+export { ReplicateProvider } from "./replicate.js"
+export { MusicGenProvider } from "./musicgen.js"
+export { EdgeTTSProvider } from "./edge-tts.js"

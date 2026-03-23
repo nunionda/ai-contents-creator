@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AnalysisReport {
+  id        String   @id @default(cuid())
+  scriptId  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Market locale ('hollywood' | 'korean')
+  market    String   @default("hollywood")
+
+  // Summary (indexed for queries)
+  totalElements   Int
+  protagonist     String?
+  predictedRoi    String  // "Flop" | "Break-even" | "Hit" | "Blockbuster"
+  predictedRating String  // "G" | "PG" | "PG-13" | "R" | "NC-17"
+
+  // Features (for analytics queries)
+  sceneCount              Int
+  characterCount          Int
+  dialogueLineCount       Int
+  actionLineCount         Int
+  dialogueToActionRatio   Float
+  averageWordsPerDialogue Float
+
+  // Complex nested data (JSONB — always read/written as a unit)
+  characterNetwork Json
+  beatSheet        Json
+  emotionGraph     Json
+  predictions      Json
+  coverage         Json?
+  production       Json?
+  narrativeArc     Json?
+  tropes           Json?
+
+  @@index([predictedRoi])
+  @@index([predictedRating])
+  @@index([createdAt])
+  @@map("analysis_reports")
+}

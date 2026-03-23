@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(lsof -i :4000 -i :3000 -i :4005)",
+      "WebFetch(domain:localhost)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun run lint:file -- \"$CLAUDE_FILE_PATH\" --fix 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  },
+  "allowedCommands": [
+    "bun run typecheck",
+    "bun run test",
+    "bun run test:file",
+    "bun run lint",
+    "bun run lint:file",
+    "bun run lint:claude",
+    "git status",
+    "git diff",
+    "git log",
+    "git branch",
+    "git add",
+    "gh pr"
+  ]
+}

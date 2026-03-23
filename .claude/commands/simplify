@@ -1,0 +1,9 @@
+Review the code I just changed for simplicity, reuse, and quality.
+
+Changed files: $(/usr/bin/env bash -c 'git diff --name-only HEAD 2>/dev/null || git diff --name-only --cached 2>/dev/null || echo "No git changes detected"')
+
+Instructions:
+1. Read each changed file.
+2. Look for: duplication, unnecessary complexity, unused imports/variables, overly verbose code.
+3. Simplify where possible without changing behavior.
+4. Run `bun run typecheck` and `bun run test` to verify nothing broke.

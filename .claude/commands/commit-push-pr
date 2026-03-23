@@ -1,0 +1,13 @@
+Commit all staged changes, push to remote, and create a pull request.
+
+Current branch: $(/usr/bin/env bash -c 'git branch --show-current')
+Git status: $(/usr/bin/env bash -c 'git status --short')
+Recent commits: $(/usr/bin/env bash -c 'git log --oneline -5')
+Diff stats: $(/usr/bin/env bash -c 'git diff --cached --stat')
+
+Instructions:
+1. Run `bun run lint:claude && bun run test` to verify before committing.
+2. Stage any unstaged changes if needed (`git add`).
+3. Write a clear, concise commit message summarizing the changes.
+4. Commit, push to the current branch (create remote branch if needed).
+5. Create a PR with `gh pr create` — include a summary and test plan.

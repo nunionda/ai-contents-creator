@@ -1,0 +1,96 @@
+{
+  "scriptId": "fight_club",
+  "summary": {
+    "totalElements": 35,
+    "protagonist": "JACK",
+    "predictedRoi": "Blockbuster",
+    "predictedRating": "R"
+  },
+  "characterNetwork": [
+    {
+      "name": "JACK",
+      "totalLines": 6,
+      "totalWords": 28,
+      "role": "Protagonist"
+    },
+    {
+      "name": "TYLER",
+      "totalLines": 4,
+      "totalWords": 34,
+      "role": "Antagonist"
+    },
+    {
+      "name": "DOCTOR",
+      "totalLines": 2,
+      "totalWords": 26,
+      "role": "Supporting"
+    },
+    {
+      "name": "BOB",
+      "totalLines": 1,
+      "totalWords": 5,
+      "role": "Supporting"
+    }
+  ],
+  "beatSheet": [
+    {
+      "act": 1,
+      "name": "Inciting Incident",
+      "sceneStart": 1,
+      "sceneEnd": 5,
+      "description": "Jack meets Tyler."
+    }
+  ],
+  "emotionGraph": [],
+  "features": {
+    "sceneCount": 3,
+    "characterCount": 4,
+    "dialogueLineCount": 13,
+    "actionLineCount": 4,
+    "dialogueToActionRatio": 3.25,
+    "averageWordsPerDialogue": 7.153846153846154
+  },
+  "predictions": {
+    "roi": {
+      "tier": "Blockbuster",
+      "predictedMultiplier": 12.5,
+      "confidence": 0.9,
+      "reasoning": "Cult classic potential."
+    },
+    "rating": {
+      "rating": "R",
+      "reasons": [
+        "Extreme violence"
+      ],
+      "confidence": 0.99
+    },
+    "comps": [
+      {
+        "title": "The Social Network",
+        "similarityScore": 0.673528224058131,
+        "sharedTraits": [
+          "Dialogue Heavy",
+          "Rapid Pacing"
+        ],
+        "marketPerformance": {
+          "budget": 40000000,
+          "revenue": 224900000,
+          "roi": 5.62
+        }
+      },
+      {
+        "title": "Inception",
+        "similarityScore": 0.07954285638454794,
+        "sharedTraits": [
+          "High Emotional Volatility",
+          "Multi-layered structure"
+        ],
+        "marketPerformance": {
+          "budget": 160000000,
+          "revenue": 836800000,
+          "roi": 5.23
+        }
+      }
+    ]
+  }
+}

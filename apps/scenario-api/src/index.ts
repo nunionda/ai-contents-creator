@@ -37,8 +37,8 @@ import {
   type ModelBenchmarkResult,
   type BenchmarkComparison,
   type ScriptElement,
-} from "@scenario-analysis/core";
-import { AnalysisReportRepository } from "@scenario-analysis/database";
+} from "@marionette/scenario-core";
+import { AnalysisReportRepository } from "@marionette/scenario-db";
 import { generateScriptId, getVersionSearchPattern } from "./utils/naming";
 
 const reportRepo = new AnalysisReportRepository();

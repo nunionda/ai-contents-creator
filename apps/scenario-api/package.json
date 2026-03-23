@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@marionette/scenario-api",
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",
-    "@scenario-analysis/core": "workspace:*",
-    "@scenario-analysis/database": "workspace:*",
+    "@marionette/scenario-core": "workspace:*",
+    "@marionette/scenario-db": "workspace:*",
     "elysia": "latest"
   },
   "devDependencies": {

@@ -1,17 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./generated/client/index.js";
 import { resolve } from "path";
 import { config } from "dotenv";
 
-// Load .env from the monorepo root (handles running from apps/api/ etc.)
+// Load .env from the monorepo root (handles running from apps/scenario-api/ etc.)
 config({ path: resolve(process.cwd(), ".env") });
 config({ path: resolve(process.cwd(), "../../.env") });
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  scenarioPrisma: PrismaClient | undefined;
 };
 
 export const prisma =
-  globalForPrisma.prisma ??
+  globalForPrisma.scenarioPrisma ??
   new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
@@ -20,5 +20,5 @@ export const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma.scenarioPrisma = prisma;
 }

@@ -1,0 +1,21 @@
+Wrap up the current coding session by syncing documentation and pushing to remote.
+
+Current branch: $(/usr/bin/env bash -c 'git branch --show-current')
+Git status: $(/usr/bin/env bash -c 'git status --short')
+Recent commits: $(/usr/bin/env bash -c 'git log --oneline -5')
+Existing plans: $(/usr/bin/env bash -c 'ls docs/plans/ 2>/dev/null || echo "none"')
+Existing results: $(/usr/bin/env bash -c 'ls docs/results/ 2>/dev/null || echo "none"')
+
+Instructions:
+
+1. **Verify Implementation Plan:** Check if this session's work has a corresponding plan in `docs/plans/` (naming: `NN-phaseX-description.md`, e.g. `03-phase5-database-persistence.md`). If not, create one summarizing the architecture, scope, and core features of this phase.
+
+2. **Summarize Execution Results:** Create a result file in `docs/results/` (naming: `session-N-description.md`, next sequential number). Detail the APIs built, infrastructure updates, files changed, verification results, and how-to-run instructions. Match the style of existing result files.
+
+3. **Update README:** Add the new plan (if created) to the Plans list (newest first) and the new result to the Results list (append at bottom) in the `## Development Track` section of `README.md`.
+
+4. **Stage and commit:** `git add docs/plans/ docs/results/ README.md` then commit with message `docs: auto-sync implementation plans and results (Phase X Description)`.
+
+5. **Branch verification:** Confirm the current branch follows Git Flow (`main`, `develop`, `feature/<name>`, `hotfix/<name>`). If on a completed `feature/` branch, merge into `develop` first.
+
+6. **Push:** `git push origin` the current branch.

@@ -1,0 +1,20 @@
+{
+  "name": "@scenario-analysis/core",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "benchmark": "bun run src/creative/infrastructure/benchmark/run.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "@google/genai": "^1.46.0",
+    "@pinecone-database/pinecone": "^7.1.0",
+    "@types/pdf-parse": "^1.1.5",
+    "openai": "^6.32.0",
+    "pdf-parse": "^2.4.5",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
+  }
+}

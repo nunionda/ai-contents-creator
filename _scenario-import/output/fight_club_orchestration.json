@@ -1,0 +1,56 @@
+{
+  "scriptId": "fight_club",
+  "summary": {
+    "totalElements": 35,
+    "protagonist": "JACK"
+  },
+  "characterNetwork": [
+    {
+      "name": "JACK",
+      "totalLines": 6,
+      "totalWords": 28,
+      "role": "Protagonist"
+    },
+    {
+      "name": "TYLER",
+      "totalLines": 4,
+      "totalWords": 34,
+      "role": "Antagonist"
+    },
+    {
+      "name": "DOCTOR",
+      "totalLines": 2,
+      "totalWords": 26,
+      "role": "Supporting"
+    },
+    {
+      "name": "BOB",
+      "totalLines": 1,
+      "totalWords": 5,
+      "role": "Supporting"
+    }
+  ],
+  "beatSheet": [
+    {
+      "act": 1,
+      "name": "Inciting Incident",
+      "sceneStart": 1,
+      "sceneEnd": 3,
+      "description": "Tyler asks Jack to hit him."
+    }
+  ],
+  "emotionGraph": [
+    {
+      "sceneNumber": 1,
+      "score": -5,
+      "dominantEmotion": "Depression",
+      "explanation": "Support group."
+    },
+    {
+      "sceneNumber": 2,
+      "score": 8,
+      "dominantEmotion": "Excitement",
+      "explanation": "Fight begins."
+    }
+  ]
+}

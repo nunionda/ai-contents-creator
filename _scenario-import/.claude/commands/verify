@@ -1,0 +1,7 @@
+Run the full verification suite to confirm everything works.
+
+Instructions:
+1. Run `bun run typecheck` — report any type errors.
+2. Run `bun run test` — report any test failures.
+3. Run `bun run lint` — report any lint errors.
+4. If all pass, confirm with a summary. If any fail, fix the issues and re-run.

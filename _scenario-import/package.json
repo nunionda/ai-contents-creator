@@ -1,0 +1,38 @@
+{
+  "name": "scenario-analysys-system",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:file": "bun test",
+    "lint": "eslint .",
+    "lint:file": "eslint",
+    "lint:claude": "bun run lint",
+    "index:test": "bun run index.test.ts",
+    "test:e2e:sim": "bun run packages/core/src/e2e/simulationTest.ts",
+    "benchmark:providers": "bun run packages/core/src/e2e/providerBenchmark.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/winston": "^2.4.4",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
+    "eslint": "^10.0.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@types/pdf-parse": "^1.1.5",
+    "dotenv": "^17.3.1",
+    "pdf-parse": "^2.4.5",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
+  }
+}

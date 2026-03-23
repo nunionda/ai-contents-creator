@@ -1,0 +1,30 @@
+name: Scenario Analysis CI/CD
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+        
+    - name: Install dependencies
+      run: bun install
+      
+    - name: Run ESLint
+      run: bun run lint
+      
+    - name: Typecheck
+      run: bun run typecheck
+      
+    - name: Run Tests
+      run: bun test

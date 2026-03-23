@@ -1,0 +1,481 @@
+/* ===== StatisticalROIPanel: AI vs Statistical k-NN ROI Comparison ===== */
+
+/* --- Container --- */
+.stat-roi-panel {
+  width: 100%;
+}
+
+.stat-roi-glass {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Header --- */
+.stat-roi-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-roi-title {
+  margin: 0;
+  font-size: var(--font-size-xl, 1.3rem);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-roi-title svg {
+  color: var(--accent-blue);
+}
+
+/* --- Side-by-side Grid --- */
+.stat-roi-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+/* --- Model Card --- */
+.stat-roi-model-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glass);
+  transition: border-color 0.2s ease;
+}
+
+.stat-roi-model-card:hover {
+  border-color: var(--border-glass-hover);
+}
+
+.stat-roi-model-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stat-roi-model-label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-roi-model-label.ai {
+  color: var(--accent-blue);
+}
+
+.stat-roi-model-label.statistical {
+  color: var(--accent-gold);
+}
+
+.stat-roi-model-type-badge {
+  font-size: var(--font-size-xs);
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+/* --- Tier Badge --- */
+.stat-roi-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.stat-roi-tier-badge.blockbuster {
+  background: rgba(46, 204, 113, 0.15);
+  color: var(--color-success);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.stat-roi-tier-badge.hit {
+  background: rgba(0, 112, 243, 0.15);
+  color: var(--accent-blue);
+  border: 1px solid rgba(0, 112, 243, 0.3);
+}
+
+.stat-roi-tier-badge.moderate {
+  background: rgba(243, 156, 18, 0.15);
+  color: var(--color-warning);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.stat-roi-tier-badge.flop {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.stat-roi-tier-badge.default {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+  border: 1px solid var(--border-glass);
+}
+
+/* --- Multiplier --- */
+.stat-roi-multiplier {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: white;
+}
+
+.stat-roi-multiplier-suffix {
+  font-size: var(--font-size-sm);
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-left: 0.15rem;
+}
+
+/* --- Confidence Bar --- */
+.stat-roi-confidence {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-roi-confidence-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-roi-confidence-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.stat-roi-confidence-value {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.stat-roi-confidence-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stat-roi-confidence-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.stat-roi-confidence-fill.ai {
+  background: linear-gradient(90deg, rgba(0, 112, 243, 0.5), var(--accent-blue));
+}
+
+.stat-roi-confidence-fill.statistical {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), var(--accent-gold));
+}
+
+/* --- Reasoning --- */
+.stat-roi-reasoning {
+  font-size: var(--font-size-sm);
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin: 0;
+  font-style: italic;
+}
+
+/* --- ROI Value --- */
+.stat-roi-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.stat-roi-value-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.stat-roi-value-number {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+/* --- Consensus Indicator --- */
+.stat-roi-consensus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.stat-roi-consensus.agree {
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+  color: var(--color-success);
+}
+
+.stat-roi-consensus.diverge {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: var(--accent-gold);
+}
+
+/* --- Revenue Range Bar --- */
+.stat-roi-revenue-section {
+  margin-bottom: 1.25rem;
+}
+
+.stat-roi-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.75rem 0;
+}
+
+.stat-roi-revenue-bar-container {
+  position: relative;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-glass);
+  overflow: hidden;
+}
+
+.stat-roi-revenue-bar-range {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 112, 243, 0.2), rgba(46, 204, 113, 0.25), rgba(212, 175, 55, 0.2));
+  border-radius: 8px;
+}
+
+.stat-roi-revenue-bar-likely {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: white;
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.stat-roi-revenue-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+}
+
+.stat-roi-revenue-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.stat-roi-revenue-label-type {
+  font-size: var(--font-size-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-roi-revenue-label-value {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.stat-roi-revenue-label.likely .stat-roi-revenue-label-value {
+  color: white;
+}
+
+/* --- Neighbors Table --- */
+.stat-roi-neighbors-section {
+  margin-bottom: 0;
+}
+
+.stat-roi-neighbors-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stat-roi-neighbors-table th {
+  text-align: left;
+  font-size: var(--font-size-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border-glass);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stat-roi-neighbors-table th:last-child {
+  text-align: right;
+}
+
+.stat-roi-neighbors-table td {
+  padding: 0.45rem 0.5rem;
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+}
+
+.stat-roi-neighbors-table tr:last-child td {
+  border-bottom: none;
+}
+
+.stat-roi-neighbor-title {
+  font-weight: 600;
+  color: white;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stat-roi-neighbor-similarity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-roi-similarity-bar {
+  display: inline-block;
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.stat-roi-similarity-fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent-blue);
+  transition: width 0.3s ease;
+}
+
+.stat-roi-neighbor-roi {
+  font-weight: 700;
+  text-align: right;
+}
+
+.stat-roi-neighbor-roi.positive {
+  color: var(--color-success);
+}
+
+.stat-roi-neighbor-roi.negative {
+  color: var(--color-danger);
+}
+
+/* --- Empty / No Data State --- */
+.stat-roi-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-dim);
+  font-size: var(--font-size-sm);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .stat-roi-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-roi-neighbors-table th,
+  .stat-roi-neighbors-table td {
+    font-size: var(--font-size-xs);
+    padding: 0.35rem 0.4rem;
+  }
+
+  .stat-roi-neighbor-title {
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stat-roi-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-roi-neighbors-table {
+    font-size: var(--font-size-xs);
+  }
+
+  .stat-roi-neighbor-title {
+    max-width: 100px;
+  }
+
+  .stat-roi-revenue-labels {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* --- Print --- */
+@media print {
+  .stat-roi-glass {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    break-inside: avoid;
+  }
+
+  .stat-roi-model-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+
+  .stat-roi-neighbors-table th,
+  .stat-roi-neighbors-table td {
+    color: #333;
+    border-color: #ddd;
+  }
+
+  .stat-roi-tier-badge,
+  .stat-roi-consensus,
+  .stat-roi-confidence-fill,
+  .stat-roi-revenue-bar-range {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

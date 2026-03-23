@@ -19,7 +19,11 @@
     "dev:web": "bun run --filter @marionette/web dev",
     "db:generate": "bun run --filter @marionette/db generate",
     "db:push": "bun run --filter @marionette/db push",
-    "db:seed": "bun run --filter @marionette/db seed"
+    "db:seed": "bun run --filter @marionette/db seed",
+    "dev:scenario-api": "bun run --filter @marionette/scenario-api dev",
+    "dev:scenario-web": "bun run --filter @marionette/scenario-web dev",
+    "scenario:db:generate": "bun run --filter @marionette/scenario-db db:generate",
+    "scenario:db:push": "bun run --filter @marionette/scenario-db db:push"
   },
   "type": "module",
   "workspaces": ["apps/*", "packages/*"],

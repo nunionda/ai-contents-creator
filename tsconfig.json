@@ -26,7 +26,11 @@
       "@marionette/ai-gateway": ["./packages/ai-gateway/src"],
       "@marionette/ai-gateway/*": ["./packages/ai-gateway/src/*"],
       "@marionette/db": ["./packages/db/src"],
-      "@marionette/db/*": ["./packages/db/src/*"]
+      "@marionette/db/*": ["./packages/db/src/*"],
+      "@marionette/scenario-core": ["./packages/scenario-core/src"],
+      "@marionette/scenario-core/*": ["./packages/scenario-core/src/*"],
+      "@marionette/scenario-db": ["./packages/scenario-db/src"],
+      "@marionette/scenario-db/*": ["./packages/scenario-db/src/*"]
     }
   },
   "include": [
@@ -43,6 +47,10 @@
     "venv",
     "__pycache__",
     "output",
-    ".next"
+    ".next",
+    "apps/scenario-web",
+    "apps/scenario-api",
+    "packages/scenario-core",
+    "packages/scenario-db"
   ]
 }

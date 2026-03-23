@@ -61,3 +61,4 @@ output/
 
 # Duplicate files
 README 2.md
+packages/scenario-db/src/generated/

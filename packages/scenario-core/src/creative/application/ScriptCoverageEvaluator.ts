@@ -127,7 +127,7 @@ CRITICAL INSTRUCTION: Output ONLY raw JSON matching this schema exactly:
   "marketPotential": "2-3 sentence assessment of commercial viability, target audience, and release strategy",
   "comparableTitles": ["Film 1 (Year)", "Film 2 (Year)", "Film 3 (Year)"],
   "recommendation": "Final analyst recommendation paragraph (3-4 sentences) summarizing the verdict rationale and key next steps for development"
-}`;
+}${config.prompts.responseLanguage ? `\n\n${config.prompts.responseLanguage}` : ''}`;
 
     const userPrompt = `<screenplay>
 ${condensedScript}

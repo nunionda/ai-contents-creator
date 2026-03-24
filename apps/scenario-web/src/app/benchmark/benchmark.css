@@ -1,0 +1,494 @@
+/* ─── LLM Benchmark Dashboard ─── */
+
+.bench-root {
+  --bg-primary: #0a0a12;
+  --bg-card: #12121e;
+  --bg-elevated: #1a1a2e;
+  --border: #2a2a3e;
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888aa;
+  --text-dim: #55556e;
+  --accent: #4285F4;
+
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: var(--font-geist-sans), -apple-system, sans-serif;
+}
+
+/* ─── Header ─── */
+.bench-header {
+  margin-bottom: 32px;
+}
+
+.bench-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 12px;
+  transition: color 0.2s;
+}
+.bench-back:hover { color: var(--text-primary); }
+
+.bench-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #4285F4, #D97757, #7C3AED);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bench-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* ─── Input Section ─── */
+.bench-input {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.bench-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: border-color 0.2s, color 0.2s;
+  margin-bottom: 20px;
+}
+.bench-upload:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.bench-models h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bench-model-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.bench-model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.bench-model-chip .chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip-color);
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+.bench-model-chip.active {
+  border-color: var(--chip-color);
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--chip-color) 10%, transparent);
+}
+.bench-model-chip.active .chip-dot {
+  opacity: 1;
+  box-shadow: 0 0 6px var(--chip-color);
+}
+
+.bench-model-chip:hover {
+  border-color: var(--chip-color);
+}
+
+.bench-run-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4285F4, #7C3AED);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  justify-content: center;
+}
+.bench-run-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.bench-run-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Sections ─── */
+.bench-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.bench-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+/* ─── Ranking ─── */
+.bench-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rank-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.rank-card:hover {
+  transform: translateX(4px);
+  box-shadow: -4px 0 0 var(--rank-color);
+}
+
+.rank-1 { border-left: 3px solid gold; }
+.rank-2 { border-left: 3px solid silver; }
+.rank-3 { border-left: 3px solid #CD7F32; }
+
+.rank-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  background: var(--bg-primary);
+  color: var(--rank-color);
+  flex-shrink: 0;
+}
+
+.rank-info {
+  flex: 1;
+  min-width: 0;
+}
+.rank-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.rank-model {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.rank-metrics {
+  display: flex;
+  gap: 20px;
+}
+
+.rank-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.rank-metric svg {
+  color: var(--text-dim);
+}
+.metric-value {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.metric-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Heatmap ─── */
+.bench-heatmap-wrap {
+  overflow-x: auto;
+}
+
+.bench-heatmap {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+}
+
+.bench-heatmap th {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hm-engine-col {
+  text-align: left !important;
+  color: var(--text-secondary);
+}
+
+.hm-engine-name {
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.hm-cell {
+  padding: 10px 12px;
+  text-align: center;
+  border-radius: 8px;
+  background: hsl(var(--cell-hue), 50%, 15%);
+  border: 1px solid hsl(var(--cell-hue), 40%, 25%);
+  transition: transform 0.1s;
+}
+.hm-cell:hover {
+  transform: scale(1.05);
+}
+
+.hm-score {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: hsl(var(--cell-hue), 70%, 70%);
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-verdict {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.hm-verdict.pass { color: #4ade80; }
+.hm-verdict.warn { color: #fbbf24; }
+.hm-verdict.fail { color: #f87171; }
+
+/* ─── Radar ─── */
+.bench-radar-wrap {
+  height: 380px;
+}
+
+/* ─── Report Tabs ─── */
+.bench-report-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.report-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.report-tab.active {
+  border-color: var(--tab-color);
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--tab-color) 10%, transparent);
+}
+.report-tab:hover {
+  border-color: var(--tab-color);
+}
+
+.tab-score {
+  background: var(--bg-primary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bench-report-detail {
+  padding-top: 4px;
+}
+
+/* ─── Report Detail Grid ─── */
+.report-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.detail-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-card h4 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row span:first-child { color: var(--text-secondary); }
+.detail-row span:last-child { font-weight: 600; }
+
+.detail-engine-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.engine-name {
+  width: 80px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.engine-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.engine-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.engine-score {
+  width: 28px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.engine-verdict {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  width: 32px;
+  text-align: center;
+}
+.engine-verdict.pass { color: #4ade80; }
+.engine-verdict.warn { color: #fbbf24; }
+.engine-verdict.fail { color: #f87171; }
+
+.detail-logline {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.detail-tropes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.trope-chip {
+  padding: 4px 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.bench-empty {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 40px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .bench-root { padding: 16px; }
+  .rank-metrics { gap: 12px; flex-wrap: wrap; }
+  .report-detail-grid { grid-template-columns: 1fr; }
+}

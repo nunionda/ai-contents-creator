@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { AlertCircle, Download, Globe, Loader2, Sparkles } from 'lucide-react';
 import './dashboard.css';
 
 import UploadPanel, { ENGINE_LABELS, PROVIDER_LABELS } from './components/UploadPanel';
-import type { Strategy, ProviderChoice, MarketLocale, ViewMode } from './components/UploadPanel';
+import type { Strategy, ProviderChoice, MarketLocale, ViewMode, ModelChoice } from './components/UploadPanel';
 import CoverageReport from './components/CoverageReport';
 import ProductionBreakdown from './components/ProductionBreakdown';
 import EmotionChart from './components/EmotionChart';
@@ -25,7 +26,15 @@ import PhaseSection from './components/PhaseSection';
 import InvestmentVerdict from './components/InvestmentVerdict';
 import { generateExportFileName } from './utils/naming';
 
-export default function Dashboard() {
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div className="dashboard-grid"><main className="main-content" style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh'}}><Loader2 className="animate-spin" size={32} /></main></div>}>
+      <Dashboard />
+    </Suspense>
+  );
+}
+
+function Dashboard() {
   const [mode, setMode] = useState<ViewMode>('idle');
   const [data, setData] = useState<any>(null);
 
@@ -35,19 +44,40 @@ export default function Dashboard() {
   const [dragOver, setDragOver] = useState(false);
 
   const [reports, setReports] = useState<any[]>([]);
-  const [strategy, setStrategy] = useState<Strategy>('auto');
-  const [market, setMarket] = useState<MarketLocale>('hollywood');
+  const [strategy, setStrategy] = useState<Strategy>('custom');
+  const [selectedModel, setSelectedModel] = useState<ModelChoice>('gemini-pro');
+  const [market, setMarket] = useState<MarketLocale>('korean');
   const [customProviders, setCustomProviders] = useState<Record<string, ProviderChoice>>({
-    beatSheet: 'gemini',
-    emotion: 'gemini',
-    rating: 'gemini',
-    roi: 'gemini',
-    coverage: 'gemini',
-    vfx: 'gemini',
-    trope: 'gemini',
+    beatSheet: 'gemini-pro',
+    emotion: 'gemini-pro',
+    rating: 'gemini-pro',
+    roi: 'gemini-pro',
+    coverage: 'gemini-pro',
+    vfx: 'gemini-pro',
+    trope: 'gemini-pro',
   });
+
+  // When a model is selected, set all engines to that provider
+  const handleModelChange = useCallback((model: ModelChoice) => {
+    setSelectedModel(model);
+    if (model !== 'custom') {
+      setStrategy('custom');
+      const provider = model as ProviderChoice;
+      setCustomProviders({
+        beatSheet: provider,
+        emotion: provider,
+        rating: provider,
+        roi: provider,
+        coverage: provider,
+        vfx: provider,
+        trope: provider,
+      });
+    } else {
+      setStrategy('custom');
+    }
+  }, []);
   const [availableProviders, setAvailableProviders] = useState<Record<string, boolean>>({});
-  const [locale, setLocale] = useState<'en' | 'ko'>('en');
+  const [locale, setLocale] = useState<'en' | 'ko'>('ko');
   const [translatedData, setTranslatedData] = useState<any>(null);
   const [isTranslating, setIsTranslating] = useState(false);
   const translationCache = useRef<Map<string, any>>(new Map());
@@ -76,6 +106,8 @@ export default function Dashboard() {
     });
   }, []);
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     fetchReportHistory();
     fetch('http://localhost:4005/providers')
@@ -83,6 +115,38 @@ export default function Dashboard() {
       .then(d => setAvailableProviders(d.available || {}))
       .catch(() => {});
   }, []);
+
+  // URL query parameter support for automated export
+  useEffect(() => {
+    const reportId = searchParams.get('reportId');
+    const paramLocale = searchParams.get('locale');
+    const expandAll = searchParams.get('expandAll');
+
+    if (!reportId) return;
+
+    if (expandAll === 'true') {
+      setExpandedPhases(new Set(['verdict', 'financials', 'quality', 'production', 'deep-dive']));
+    }
+    if (paramLocale === 'ko') {
+      setLocale('ko');
+    }
+
+    // Load the report
+    (async () => {
+      setMode('analyzing');
+      try {
+        const res = await fetch(`http://localhost:4005/report/${encodeURIComponent(reportId)}`);
+        if (!res.ok) throw new Error('Failed to load report');
+        const result = await res.json();
+        setData(result);
+        setTranslatedData(null);
+        setMode('viewing');
+      } catch (err: any) {
+        setUploadError(err.message);
+        setMode('idle');
+      }
+    })();
+  }, [searchParams]);
 
   const translateReport = useCallback(async (report: any) => {
     const cacheKey = report.scriptId;
@@ -113,6 +177,25 @@ export default function Dashboard() {
       translateReport(data);
     }
   }, [locale, data, translatedData, translateReport]);
+
+  // Export-ready signal for Playwright automation
+  useEffect(() => {
+    if (mode !== 'viewing' || !data) {
+      (window as any).__EXPORT_READY = false;
+      return;
+    }
+    // For KO locale, wait until translation completes
+    if (locale === 'ko' && isTranslating) {
+      (window as any).__EXPORT_READY = false;
+      return;
+    }
+    // For KO locale, also wait until translatedData is populated
+    if (locale === 'ko' && !translatedData) {
+      (window as any).__EXPORT_READY = false;
+      return;
+    }
+    (window as any).__EXPORT_READY = true;
+  }, [mode, data, locale, isTranslating, translatedData]);
 
   async function fetchReportHistory() {
     try {
@@ -149,9 +232,7 @@ export default function Dashboard() {
       bodyPayload.fileName = selectedFile.name;
       bodyPayload.strategy = strategy;
       bodyPayload.market = market;
-      if (strategy === 'custom') {
-        bodyPayload.customProviders = customProviders;
-      }
+      bodyPayload.customProviders = customProviders;
 
       abortControllerRef.current = new AbortController();
       const res = await fetch('http://localhost:4005/analyze', {
@@ -339,6 +420,7 @@ export default function Dashboard() {
         uploadError={uploadError}
         dragOver={dragOver}
         strategy={strategy}
+        selectedModel={selectedModel}
         market={market}
         customProviders={customProviders}
         availableProviders={availableProviders}
@@ -349,6 +431,7 @@ export default function Dashboard() {
         onFileSelect={handleFileSelect}
         onMovieIdChange={setMovieId}
         onStrategyChange={setStrategy}
+        onModelChange={handleModelChange}
         onMarketChange={setMarket}
         onCustomProviderChange={(engine, provider) =>
           setCustomProviders(prev => ({ ...prev, [engine]: provider }))

@@ -76,7 +76,7 @@ CRITICAL INSTRUCTION: You MUST output ONLY raw, valid JSON matching the exact sc
 Rules for the output:
 - pagePercentage is a number from 0 to 100 representing the beat's actual position in the screenplay.
 - pacingNote is a string explaining pacing deviation, or null if the beat is within 10% of its ideal position.
-- Every one of the 15 beats must appear in the output array.`;
+- Every one of the 15 beats must appear in the output array.${config.prompts.responseLanguage ? `\n\n${config.prompts.responseLanguage}` : ''}`;
 
     const userPrompt = `<screenplay>\n${condensedScript}\n</screenplay>`;
 

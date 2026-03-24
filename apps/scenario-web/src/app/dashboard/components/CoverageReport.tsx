@@ -99,69 +99,71 @@ export default function CoverageReport({ coverage, locale = 'en', summaryMode = 
           </button>
         </div>
       )}
-      {!summaryMode && <div className="coverage-categories coverage-categories-full">
-        {coverage.categories?.map((cat: any, idx: number) => {
-          const isExpanded = !collapsedCategories.has(idx);
-          return (
-            <div key={idx} className={`glass-panel coverage-category-card ${isExpanded ? 'category-expanded' : ''}`}>
-              <div
-                className="category-header"
-                onClick={() => toggleCategory(idx)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                    <span style={{ fontWeight: 600 }}>{cat.name}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span className="category-score-badge" style={{ color: scoreColor(cat.score) }}>
-                        {cat.score}
-                      </span>
-                      <span className="category-score-label" style={{ color: scoreColor(cat.score) }}>
-                        {scoreLabel(cat.score, ko)}
-                      </span>
-                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+      {!summaryMode ? (
+        <div className="coverage-categories coverage-categories-full">
+          {coverage.categories?.map((cat: any, idx: number) => {
+            const isExpanded = !collapsedCategories.has(idx);
+            return (
+              <div key={idx} className={`glass-panel coverage-category-card ${isExpanded ? 'category-expanded' : ''}`}>
+                <div
+                  className="category-header"
+                  onClick={() => toggleCategory(idx)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                      <span style={{ fontWeight: 600 }}>{cat.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span className="category-score-badge" style={{ color: scoreColor(cat.score) }}>
+                          {cat.score}
+                        </span>
+                        <span className="category-score-label" style={{ color: scoreColor(cat.score) }}>
+                          {scoreLabel(cat.score, ko)}
+                        </span>
+                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </div>
+                    </div>
+                    <div className="category-bar">
+                      <div
+                        className="category-bar-fill"
+                        style={{
+                          width: `${cat.score}%`,
+                          background: scoreColor(cat.score),
+                        }}
+                      />
                     </div>
                   </div>
-                  <div className="category-bar">
-                    <div
-                      className="category-bar-fill"
-                      style={{
-                        width: `${cat.score}%`,
-                        background: scoreColor(cat.score),
-                      }}
-                    />
-                  </div>
                 </div>
-              </div>
-              {isExpanded && cat.subcategories && (
-                <div className="subcategories">
-                  {cat.subcategories.map((sub: any, si: number) => (
-                    <div key={si} className="subcategory-item">
-                      <div className="subcategory-header">
-                        <span className="subcategory-name">{sub.name}</span>
-                        <div className="subcategory-score-group">
-                          <span className="subcategory-score" style={{ color: scoreColor(sub.score) }}>{sub.score}</span>
-                          <span className="subcategory-score-max">/ 100</span>
+                {isExpanded && cat.subcategories && (
+                  <div className="subcategories">
+                    {cat.subcategories.map((sub: any, si: number) => (
+                      <div key={si} className="subcategory-item">
+                        <div className="subcategory-header">
+                          <span className="subcategory-name">{sub.name}</span>
+                          <div className="subcategory-score-group">
+                            <span className="subcategory-score" style={{ color: scoreColor(sub.score) }}>{sub.score}</span>
+                            <span className="subcategory-score-max">/ 100</span>
+                          </div>
                         </div>
+                        <div className="category-bar" style={{ height: '4px' }}>
+                          <div
+                            className="category-bar-fill"
+                            style={{
+                              width: `${sub.score}%`,
+                              background: scoreColor(sub.score),
+                            }}
+                          />
+                        </div>
+                        <p className="subcategory-assessment">{sub.assessment}</p>
                       </div>
-                      <div className="category-bar" style={{ height: '4px' }}>
-                        <div
-                          className="category-bar-fill"
-                          style={{
-                            width: `${sub.score}%`,
-                            background: scoreColor(sub.score),
-                          }}
-                        />
-                      </div>
-                      <p className="subcategory-assessment">{sub.assessment}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>}
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
 
       {/* Synopsis */}
       {!summaryMode && coverage.synopsis && (

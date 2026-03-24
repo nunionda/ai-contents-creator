@@ -50,3 +50,53 @@ export interface BenchmarkMatrix {
   byProvider: Record<string, { avgScore: number; totalCost: number; passRate: number }>;
   optimalMixes: OptimalMix[];
 }
+
+// ─── Per-Model Full-Pipeline Benchmark Types ───
+
+export interface BenchmarkMetrics {
+  totalLatencyMs: number;
+  totalCostUsd: number;
+  avgQualityScore: number;       // average of 7 engine overallScores
+  structuralCompleteness: number; // average of 7 engine structuralScores
+  consistency: number;            // 100 for single run, variance-based for multiple runs
+}
+
+export interface ModelBenchmarkResult {
+  provider: ProviderChoice;
+  model: string;                 // actual model name (e.g. 'gemini-2.5-pro')
+  fullReport: any;               // complete analysis result (same as /analyze response)
+  engineScores: EngineScore[];
+  metrics: BenchmarkMetrics;
+  runIndex?: number;             // for multi-run benchmarks
+}
+
+export interface RankedModel {
+  provider: ProviderChoice;
+  model: string;
+  rank: number;
+  compositeScore: number;        // weighted: quality×0.5 + cost×0.2 + speed×0.2 + structure×0.1
+  qualityScore: number;          // 0-100
+  costScore: number;             // 0-100 (normalized, lower cost = higher score)
+  speedScore: number;            // 0-100 (normalized, lower latency = higher score)
+  structureScore: number;        // 0-100
+}
+
+export interface MatrixCell {
+  engine: EngineName;
+  provider: ProviderChoice;
+  overallScore: number;
+  structuralScore: number;
+  contentScore: number;
+  verdict: 'PASS' | 'FAIL' | 'WARN';
+}
+
+export interface BenchmarkComparison {
+  benchmarkId: string;
+  scriptId: string;
+  scriptName: string;
+  timestamp: string;
+  market: string;
+  models: ModelBenchmarkResult[];
+  ranking: RankedModel[];
+  matrix: MatrixCell[];          // flat array: engines × models
+}

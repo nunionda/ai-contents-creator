@@ -8,12 +8,12 @@ export class GroqProvider implements ILLMProvider {
 
   private readonly modelChain = [
     'llama-3.3-70b-versatile',
-    'mixtral-8x7b-32768',
+    'meta-llama/llama-4-scout-17b-16e-instruct',
     'llama-3.1-8b-instant',
   ];
 
-  private readonly maxRetries = 1;
-  private readonly baseDelayMs = 3000;
+  private readonly maxRetries = 2;
+  private readonly baseDelayMs = 5000;
 
   constructor() {
     if (env.GROQ_API_KEY) {

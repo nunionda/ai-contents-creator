@@ -8,14 +8,15 @@ type ProviderChoice = 'gemini' | 'gemini-pro' | 'gemini-long' | 'anthropic' | 'o
 type MarketLocale = 'hollywood' | 'korean';
 type ViewMode = 'idle' | 'analyzing' | 'viewing';
 
-const STRATEGIES = [
-  { name: 'auto' as Strategy, label: 'Auto', labelKo: '자동', desc: 'Best available + fallback', descKo: '최적 제공자 + 폴백' },
-  { name: 'budget' as Strategy, label: 'Budget', labelKo: '저가', desc: 'Groq (free) + DeepSeek', descKo: 'Groq (무료) + DeepSeek' },
-  { name: 'fast' as Strategy, label: 'Fast', labelKo: '빠른 분석', desc: 'Gemini Flash (low cost)', descKo: 'Gemini Flash (저비용)' },
-  { name: 'deep' as Strategy, label: 'Deep Analysis', labelKo: '심층 분석', desc: 'Claude + Gemini hybrid', descKo: 'Claude + Gemini 하이브리드' },
-  { name: 'premium' as Strategy, label: 'Premium', labelKo: '프리미엄', desc: 'Claude Sonnet 4.6 (best quality)', descKo: 'Claude Sonnet 4.6 (최고 품질)' },
-  { name: 'long-context' as Strategy, label: 'Long Context', labelKo: '장문 분석', desc: 'Gemini 1.5 Pro (2M context)', descKo: 'Gemini 1.5 Pro (2M 컨텍스트)' },
-  { name: 'custom' as Strategy, label: 'Custom', labelKo: '사용자 지정', desc: 'Pick per engine', descKo: '엔진별 선택' },
+// Model-based selection (maps to strategy 'custom' with all engines = same provider)
+type ModelChoice = 'gemini-pro' | 'anthropic' | 'openai' | 'groq' | 'custom';
+
+const MODEL_CHOICES: { id: ModelChoice; label: string; labelKo: string; desc: string; descKo: string; color: string; icon: string }[] = [
+  { id: 'gemini-pro', label: 'Gemini', labelKo: '제미나이', desc: 'Gemini 2.5 Pro', descKo: 'Gemini 2.5 Pro', color: '#4285F4', icon: '◆' },
+  { id: 'anthropic', label: 'Claude', labelKo: '클로드', desc: 'Claude Sonnet 4.6', descKo: 'Claude Sonnet 4.6', color: '#D97757', icon: '◈' },
+  { id: 'openai', label: 'OpenAI', labelKo: 'OpenAI', desc: 'GPT-4o', descKo: 'GPT-4o', color: '#10A37F', icon: '◇' },
+  { id: 'groq', label: 'Groq', labelKo: 'Groq', desc: 'Llama 3.3 70B (무료)', descKo: 'Llama 3.3 70B (무료)', color: '#F97316', icon: '⚡' },
+  { id: 'custom', label: 'Custom', labelKo: '사용자 지정', desc: 'Pick per engine', descKo: '엔진별 선택', color: '#8B5CF6', icon: '⚙' },
 ];
 
 const ENGINE_LABELS: Record<string, string> = {
@@ -46,6 +47,7 @@ interface UploadPanelProps {
   uploadError: string | null;
   dragOver: boolean;
   strategy: Strategy;
+  selectedModel: ModelChoice;
   market: MarketLocale;
   customProviders: Record<string, ProviderChoice>;
   availableProviders: Record<string, boolean>;
@@ -56,6 +58,7 @@ interface UploadPanelProps {
   onFileSelect: () => void;
   onMovieIdChange: (v: string) => void;
   onStrategyChange: (s: Strategy) => void;
+  onModelChange: (m: ModelChoice) => void;
   onMarketChange: (m: MarketLocale) => void;
   onCustomProviderChange: (engine: string, provider: ProviderChoice) => void;
   onAnalyze: () => void;
@@ -64,14 +67,14 @@ interface UploadPanelProps {
   onLoadReport: (scriptId: string) => void;
 }
 
-export { ENGINE_LABELS, PROVIDER_LABELS };
-export type { Strategy, ProviderChoice, MarketLocale, ViewMode };
+export { ENGINE_LABELS, PROVIDER_LABELS, MODEL_CHOICES };
+export type { Strategy, ProviderChoice, MarketLocale, ViewMode, ModelChoice };
 
 export default function UploadPanel({
-  mode, selectedFile, movieId, uploadError, dragOver, strategy, market,
+  mode, selectedFile, movieId, uploadError, dragOver, strategy, selectedModel, market,
   customProviders, availableProviders, reports, locale,
   onSetDragOver, onFileDrop, onFileSelect, onMovieIdChange,
-  onStrategyChange, onMarketChange, onCustomProviderChange, onAnalyze, onCancel, onReset, onLoadReport,
+  onStrategyChange, onModelChange, onMarketChange, onCustomProviderChange, onAnalyze, onCancel, onReset, onLoadReport,
 }: UploadPanelProps) {
   const t = locale === 'ko';
   return (
@@ -137,22 +140,32 @@ export default function UploadPanel({
               </button>
             </div>
 
-            {/* Strategy Selector */}
-            <div className="strategy-row">
-              {STRATEGIES.map(s => (
-                <button
-                  key={s.name}
-                  className={`strategy-pill ${strategy === s.name ? 'active' : ''}`}
-                  onClick={() => onStrategyChange(s.name)}
-                >
-                  <span className="pill-label">{t ? s.labelKo : s.label}</span>
-                  <span className="pill-desc">{t ? s.descKo : s.desc}</span>
-                </button>
-              ))}
+            {/* Model Selector */}
+            <div className="model-selector">
+              <div className="model-selector-label">{t ? '분석 모델' : 'Analysis Model'}</div>
+              <div className="model-grid">
+                {MODEL_CHOICES.map(m => {
+                  const isAvailable = m.id === 'custom' || availableProviders[m.id] || m.id === 'groq';
+                  return (
+                    <button
+                      key={m.id}
+                      className={`model-card ${selectedModel === m.id ? 'active' : ''} ${!isAvailable ? 'unavailable' : ''}`}
+                      style={{ '--model-color': m.color } as React.CSSProperties}
+                      onClick={() => isAvailable && onModelChange(m.id)}
+                      disabled={!isAvailable}
+                    >
+                      <span className="model-icon">{m.icon}</span>
+                      <span className="model-name">{t ? m.labelKo : m.label}</span>
+                      <span className="model-desc">{t ? m.descKo : m.desc}</span>
+                      {!isAvailable && <span className="model-no-key">No API Key</span>}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Custom Provider Grid */}
-            {strategy === 'custom' && (
+            {/* Custom Provider Grid — only when 사용자 지정 is selected */}
+            {selectedModel === 'custom' && (
               <div className="custom-grid">
                 {(['beatSheet', 'emotion', 'rating', 'roi', 'coverage', 'vfx', 'trope'] as const).map(engine => (
                   <div key={engine} className="custom-grid-item">
@@ -162,9 +175,9 @@ export default function UploadPanel({
                       value={customProviders[engine]}
                       onChange={(e) => onCustomProviderChange(engine, e.target.value as ProviderChoice)}
                     >
-                      {(['gemini', 'anthropic', 'openai', 'mock'] as const).map(p => (
-                        <option key={p} value={p} disabled={p !== 'mock' && !availableProviders[p]}>
-                          {PROVIDER_LABELS[p]}{p !== 'mock' && !availableProviders[p] ? ' (no key)' : ''}
+                      {(['gemini-pro', 'gemini', 'anthropic', 'openai', 'deepseek', 'groq', 'mock'] as const).map(p => (
+                        <option key={p} value={p} disabled={p !== 'mock' && !availableProviders[p] && !availableProviders[p.split('-')[0]]}>
+                          {PROVIDER_LABELS[p] || p}{p !== 'mock' && !availableProviders[p] && !availableProviders[p.split('-')[0]] ? ' (no key)' : ''}
                         </option>
                       ))}
                     </select>

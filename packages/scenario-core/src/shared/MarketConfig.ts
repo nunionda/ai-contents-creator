@@ -35,6 +35,8 @@ export interface MarketPrompts {
   consultantRole: string;
   tropeAnalystRole: string;
   boxOfficeRole: string;
+  /** Language directive appended to all LLM system prompts. Empty for English markets. */
+  responseLanguage: string;
 }
 
 export interface MarketConfig {
@@ -85,6 +87,7 @@ export const HOLLYWOOD_CONFIG: MarketConfig = {
     consultantRole: 'an expert Hollywood script consultant structurally evaluating a screenplay',
     tropeAnalystRole: 'a trope analyzer for Hollywood screenplays',
     boxOfficeRole: 'a Hollywood market intelligence AI',
+    responseLanguage: '',
   },
 };
 
@@ -127,6 +130,7 @@ export const KOREAN_CONFIG: MarketConfig = {
     consultantRole: 'an expert Korean screenplay consultant (한국 시나리오 전문 컨설턴트) structurally evaluating a screenplay for the Korean market',
     tropeAnalystRole: 'a trope analyzer specializing in Korean cinema narrative patterns (한국 영화 서사 패턴 분석가)',
     boxOfficeRole: 'a Korean box office market intelligence AI analyzing the domestic Korean film market (한국 박스오피스 시장 분석 AI)',
+    responseLanguage: 'LANGUAGE: You MUST write ALL text values in Korean (한국어). This includes descriptions, assessments, synopsis, strengths, weaknesses, reasoning, recommendations, and logline. JSON keys must remain in English. Example: "description": "주인공이 첫 번째 위기에 직면한다."',
   },
 };
 

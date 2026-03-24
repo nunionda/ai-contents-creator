@@ -33,7 +33,7 @@ CRITICAL INSTRUCTION: Output ONLY raw JSON matching this schema exactly:
   "confidence": 0.85,
   "reasoning": "Explanation based on provided features...",
   "revenueRange": { "low": 50000000, "likely": 120000000, "high": 250000000 }
-}`;
+}${config.prompts.responseLanguage ? `\n\n${config.prompts.responseLanguage}` : ''}`;
 
     const compsSection = comps && comps.length > 0
       ? `\n\nComparable Films:\n${comps.map(c => `- ${c.title}: Budget $${c.marketPerformance.budget}, Revenue $${c.marketPerformance.revenue}, ROI ${c.marketPerformance.roi}, Similarity ${c.similarityScore.toFixed(2)}, Traits: [${c.sharedTraits.join(', ')}]`).join('\n')}`
